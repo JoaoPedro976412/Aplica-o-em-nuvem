@@ -72,7 +72,6 @@ if (isset($_GET['success'])) {
                                 <th>E-mail</th>
                                 <th>Telefone</th>
                                 <th>Cidade</th>
-                                <th>Data Cadastro</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -84,7 +83,6 @@ if (isset($_GET['success'])) {
                                 <td><?php echo htmlspecialchars($row['email']); ?></td>
                                 <td><?php echo htmlspecialchars($row['telefone']); ?></td>
                                 <td><?php echo htmlspecialchars($row['cidade']); ?></td>
-                                <td><?php echo date('d/m/Y H:i', strtotime($row['data_cadastro'])); ?></td>
                                 <td class="actions">
                                     <form action="excluir.php" method="POST" style="display: inline;">
                                         <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
