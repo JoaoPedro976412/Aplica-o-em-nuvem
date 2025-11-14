@@ -20,22 +20,22 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
     </style>
 </head>
 <body>
-    <h1>📊 Sistema de Cadastro</h1>
+    <h1> Sistema de Cadastro</h1>
     
     <div class="card">
-        <h3>📈 Estatísticas</h3>
+        <h3> Estatísticas</h3>
         <p><strong>Total de usuários:</strong> <?php echo $total_usuarios; ?></p>
         <p><strong>Arquivo do banco:</strong> <?php echo realpath('database.sqlite'); ?></p>
     </div>
 
     <div class="card">
-        <h3>📋 Tabelas no Banco</h3>
+        <h3> Tabelas no Banco</h3>
         <?php foreach($tabelas as $tabela): ?>
-            <p>✅ <?php echo $tabela['name']; ?></p>
+            <p> <?php echo $tabela['name']; ?></p>
         <?php endforeach; ?>
     </div>
 
-    <h3>👥 Usuários Cadastrados</h3>
+    <h3> Usuários Cadastrados</h3>
     <?php if ($total_usuarios > 0): ?>
         <table>
             <thead>
@@ -63,7 +63,7 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
             </tbody>
         </table>
     <?php else: ?>
-        <p>📭 Nenhum usuário cadastrado.</p>
+        <p> Nenhum usuário cadastrado.</p>
     <?php endif; ?>
 
     <br>

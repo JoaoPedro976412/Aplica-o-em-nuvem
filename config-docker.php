@@ -83,7 +83,7 @@ function createConnection() {
         }
         
         die("<div style='padding: 20px; background: #f8d7da; color: #721c24; border-radius: 5px; margin: 20px;'>
-                <h3>❌ Erro de Conexão com o Banco de Dados</h3>
+                <h3> Erro de Conexão com o Banco de Dados</h3>
                 <p><strong>Erro:</strong> " . $conn_temp->connect_error . "</p>
                 <p><strong>Ambiente:</strong> " . $config['environment'] . "</p>
                 <p><strong>Host:</strong> " . $config['host'] . "</p>

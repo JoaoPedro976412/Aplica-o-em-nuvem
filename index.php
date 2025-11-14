@@ -10,9 +10,9 @@ $result = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");
 // Mensagens de sucesso/erro
 $message = '';
 if (isset($_GET['success'])) {
-    $message = '<div class="success-message">✅ ' . htmlspecialchars($_GET['success']) . '</div>';
+    $message = '<div class="success-message"> ' . htmlspecialchars($_GET['success']) . '</div>';
 } elseif (isset($_GET['error'])) {
-    $message = '<div class="error-message">❌ ' . htmlspecialchars($_GET['error']) . '</div>';
+    $message = '<div class="error-message"> ' . htmlspecialchars($_GET['error']) . '</div>';
 }
 ?>
 <!DOCTYPE html>
