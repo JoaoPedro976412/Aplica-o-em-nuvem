@@ -11,12 +11,12 @@ function getDatabaseConfig() {
     $dockerHost = getenv('MYSQL_HOST');
     
     if ($dockerHost) {
-        // Configurações Docker
+        // Configurações Docker - USA AS VARIÁVEIS DO RAILWAY
         return [
-            'host' => $dockerHost ?: 'db',
-            'user' => getenv('MYSQL_USER') ?: 'usuario_app',
-            'password' => getenv('MYSQL_PASSWORD') ?: 'senha123',
-            'database' => getenv('MYSQL_DATABASE') ?: 'sistema_cadastro',
+            'host' => $dockerHost ?: 'mysql.railway.internal',
+            'user' => getenv('MYSQL_USER') ?: 'root',
+            'password' => getenv('MYSQL_PASSWORD') ?: '',
+            'database' => getenv('MYSQL_DATABASE') ?: 'railway',
             'environment' => 'DOCKER'
         ];
     } else {
