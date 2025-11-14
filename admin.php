@@ -45,7 +45,6 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
                     <th>E-mail</th>
                     <th>Telefone</th>
                     <th>Cidade</th>
-                    <th>Data Cadastro</th>
                 </tr>
             </thead>
             <tbody>
@@ -59,7 +58,6 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                     <td><?php echo htmlspecialchars($user['telefone']); ?></td>
                     <td><?php echo htmlspecialchars($user['cidade']); ?></td>
-                    <td><?php echo $user['data_cadastro'] ? date('d/m/Y H:i', strtotime($user['data_cadastro'])) : '-'; ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
