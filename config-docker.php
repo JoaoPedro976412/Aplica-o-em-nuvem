@@ -2,22 +2,22 @@
 /**
  * Configurações do Sistema - Ambiente Docker
  * Trabalho Prático: Cloud/WEB/Docker
- * Gerencia conexões com MySQL para ambientes Docker e XAMPP
+ * Gerencia conexões com MySQL para ambientes Railway e XAMPP
  */
 
-// Configurações para ambiente Docker
+// Configurações para ambiente Railway
 function getDatabaseConfig() {
-    // Verificar se estamos no Docker (variáveis de ambiente)
-    $dockerHost = getenv('MYSQL_HOST');
+    // Verificar se estamos no Railway (variáveis de ambiente)
+    $railwayHost = getenv('MYSQLHOST');
     
-    if ($dockerHost) {
-        // Configurações Docker - USA AS VARIÁVEIS DO RAILWAY
+    if ($railwayHost) {
+        // Configurações Railway - USA AS VARIÁVEIS REAIS
         return [
-            'host' => $dockerHost ?: 'mysql.railway.internal',
-            'user' => getenv('MYSQL_USER') ?: 'root',
-            'password' => getenv('MYSQL_PASSWORD') ?: '',
-            'database' => getenv('MYSQL_DATABASE') ?: 'railway',
-            'environment' => 'DOCKER'
+            'host' => $railwayHost ?: 'mysql.railway.internal',
+            'user' => getenv('MYSQLUSER') ?: 'root',
+            'password' => getenv('MYSQLPASSWORD') ?: 'xminMfPMKOPjROIQFmEEBPMbuxGmodkz',
+            'database' => getenv('MYSQLDATABASE') ?: 'railway',
+            'environment' => 'RAILWAY'
         ];
     } else {
         // Configurações XAMPP (desenvolvimento)
@@ -63,8 +63,8 @@ function createConnection() {
         $error_msg = "Erro na conexão com o MySQL: " . $conn_temp->connect_error;
         logSystemInfo($error_msg);
         
-        // Tentativa de fallback para localhost se estiver no Docker
-        if ($config['environment'] === 'DOCKER') {
+        // Tentativa de fallback para localhost se estiver no Railway
+        if ($config['environment'] === 'RAILWAY') {
             logSystemInfo("Tentando fallback para localhost...");
             $config['host'] = 'localhost';
             $config['user'] = 'root';
@@ -146,7 +146,7 @@ function getEnvironmentInfo() {
         'environment' => $config['environment'],
         'mysql_host' => $config['host'],
         'database' => $config['database'],
-        'docker_running' => !empty(getenv('MYSQL_HOST')),
+        'railway_running' => !empty(getenv('MYSQLHOST')),
         'php_version' => PHP_VERSION,
         'server_software' => $_SERVER['SERVER_SOFTWARE'] ?? 'N/A'
     ];
