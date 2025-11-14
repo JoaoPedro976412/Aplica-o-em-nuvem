@@ -4,8 +4,8 @@ require_once 'config-docker.php';
 // Conexão - LINHA MODIFICADA
 $conn = getConnection();
 
-// Buscar usuários
-$result = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");
+// Buscar usuários (SQLite) - CORRIGIDO
+$usuarios = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");
 
 // Mensagens de sucesso/erro
 $message = '';
@@ -63,10 +63,7 @@ if (isset($_GET['success'])) {
             <!-- Lista de Usuários -->
             <div class="list-section">
                 <h2>👥 Usuários Cadastrados</h2>
-                <?php 
-                $usuarios = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");
-                if ($usuarios->rowCount() > 0): 
-                ?>
+                <?php if ($usuarios->rowCount() > 0): ?>
                     <table>
                         <thead>
                             <tr>
@@ -110,6 +107,7 @@ if (isset($_GET['success'])) {
         <div class="footer">
             <p>Trabalho Prático - Desenvolvido com PHP + SQLite + Cloud</p>
             <p>Ambiente: <?php echo getenv('RENDER') ? 'Render' : 'XAMPP'; ?></p>
+            <p><a href="admin.php" style="color: #007bff;">📊 Acessar Admin SQLite</a></p>
         </div>
     </div>
 
