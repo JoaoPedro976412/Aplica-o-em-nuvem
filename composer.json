@@ -1,0 +1,10 @@
+{
+    "name": "seu-usuario/aplicacao-em-nuvem",
+    "require": {
+        "php": "^8.0",
+        "ext-pdo": "*"
+    },
+    "scripts": {
+        "start": "php -S 0.0.0.0:$PORT index.php"
+    }
+}
