@@ -1,7 +1,7 @@
 <?php
 require_once 'config-docker.php';
 
-$conn = getConnection();
+$conn = createConnection();
 
 // Estatísticas do banco
 $total_usuarios = $conn->query("SELECT COUNT(*) as total FROM usuarios")->fetch()['total'];

@@ -2,7 +2,7 @@
 require_once 'config-docker.php';
 
 // Conexão
-$conn = getConnection();
+$conn = createConnection();
 
 // Buscar usuários (SQLite)
 $usuarios = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");

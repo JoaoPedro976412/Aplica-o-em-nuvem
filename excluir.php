@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (!empty($id)) {
         try {
-            $conn = getConnection();
+            $conn = createConnection();
             
             // Excluir usuário
             $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");

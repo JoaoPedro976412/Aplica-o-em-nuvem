@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     try {
-        $conn = getConnection();
+        $conn = createConnection();
         
         // Inserir usuário
         $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, telefone, cidade) VALUES (?, ?, ?, ?)");
