@@ -10,11 +10,11 @@ function getDatabaseConfig() {
     // Tenta TODAS as possíveis variáveis do Railway
     $host = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST') ?: 'mysql.railway.internal';
     $user = getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: 'root';
-    $password = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: 'xminMfPMKOPjROIQFmEEBPMbuxGmodkz';
+    $password = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: '';
     $database = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: 'railway';
     
     // FORÇA conexão Railway se detectar que está no Railway
-    if (getenv('RAILWAY_PUBLIC_DOMAIN')) {
+    if (getenv('RAILWAY_PUBLIC_DOMAIN') || getenv('MYSQLHOST')) {
         return [
             'host' => $host,
             'user' => $user,
@@ -38,7 +38,7 @@ function getDatabaseConfig() {
 function createConnection() {
     $config = getDatabaseConfig();
     
-    // Tentativa de conexão direta com o banco
+    // PRIMEIRA TENTATIVA: Conectar com root (pode falhar se senha mudou)
     $conn = new mysqli(
         $config['host'],
         $config['user'], 
@@ -49,52 +49,57 @@ function createConnection() {
     // Se conexão bem-sucedida
     if (!$conn->connect_error) {
         logSystemInfo("Conexão MySQL estabelecida com sucesso - Ambiente: " . $config['environment']);
+        
+        // Tenta criar usuário personalizado para evitar problemas futuros
+        createCustomUser($conn);
+        
         return $conn;
     }
     
-    // Se não conseguir conectar, tentar criar o banco
-    logSystemInfo("Tentando criar banco de dados...");
+    // SE FALHOU: Tentar descobrir a senha atual do root
+    logSystemInfo("Falha na conexão com root, tentando alternativas...");
     
-    // Conexão sem database específico
-    $conn_temp = new mysqli(
-        $config['host'],
-        $config['user'], 
-        $config['password']
-    );
-    
-    if ($conn_temp->connect_error) {
-        $error_msg = "Erro na conexão com o MySQL: " . $conn_temp->connect_error;
-        logSystemInfo($error_msg);
-        
-        // Tentativa de fallback para localhost se estiver no Railway
-        if ($config['environment'] === 'RAILWAY') {
-            logSystemInfo("Tentando fallback para localhost...");
-            $config['host'] = 'localhost';
-            $config['user'] = 'root';
-            $config['password'] = '';
-            
-            $conn_fallback = new mysqli(
-                $config['host'],
-                $config['user'], 
-                $config['password']
-            );
-            
-            if (!$conn_fallback->connect_error) {
-                logSystemInfo("Fallback para localhost bem-sucedido");
-                return initializeDatabase($conn_fallback, $config['database']);
-            }
-        }
-        
-        die("<div style='padding: 20px; background: #f8d7da; color: #721c24; border-radius: 5px; margin: 20px;'>
-                <h3>❌ Erro de Conexão com o Banco de Dados</h3>
-                <p><strong>Erro:</strong> " . $conn_temp->connect_error . "</p>
-                <p><strong>Ambiente:</strong> " . $config['environment'] . "</p>
-                <p><strong>Host:</strong> " . $config['host'] . "</p>
-                <p>Verifique se o MySQL está rodando e as credenciais estão corretas.</p>
-            </div>");
+    // Tentar conectar sem senha (para desenvolvimento)
+    $conn_fallback = new mysqli($config['host'], 'root', '');
+    if (!$conn_fallback->connect_error) {
+        logSystemInfo("Conectado sem senha - criando usuário personalizado");
+        return initializeWithCustomUser($conn_fallback, $config['database']);
     }
     
-    return initializeDatabase($conn_temp, $config['database']);
+    die("<div style='padding: 20px; background: #f8d7da; color: #721c24; border-radius: 5px; margin: 20px;'>
+            <h3>❌ Erro de Conexão com o Banco de Dados</h3>
+            <p><strong>Erro:</strong> " . $conn->connect_error . "</p>
+            <p><strong>Ambiente:</strong> " . $config['environment'] . "</p>
+            <p><strong>Dica:</strong> O Railway pode ter regenerado a senha do MySQL.</p>
+            <p>Verifique a senha atual em: MySQL → Variables → MYSQLPASSWORD</p>
+            <p>Senha tentada: " . (empty($config['password']) ? '(vazia)' : '***') . "</p>
+        </div>");
+}
+
+// Função para criar usuário personalizado
+function createCustomUser($connection) {
+    $custom_user = 'app_user';
+    $custom_password = 'SenhaFixa123456';
+    
+    // Tenta criar usuário (pode falhar se não tiver permissões)
+    try {
+        $connection->query("CREATE USER IF NOT EXISTS '$custom_user'@'%' IDENTIFIED BY '$custom_password'");
+        $connection->query("GRANT ALL PRIVILEGES ON railway.* TO '$custom_user'@'%'");
+        $connection->query("FLUSH PRIVILEGES");
+        logSystemInfo("Usuário personalizado criado: $custom_user");
+    } catch (Exception $e) {
+        logSystemInfo("Não foi possível criar usuário personalizado: " . $e->getMessage());
+    }
+}
+
+function initializeWithCustomUser($connection, $databaseName) {
+    // Primeiro inicializa o banco
+    $conn = initializeDatabase($connection, $databaseName);
+    
+    // Depois cria usuário personalizado
+    createCustomUser($conn);
+    
+    return $conn;
 }
 
 // Função para inicializar o banco de dados
@@ -182,7 +187,7 @@ function testDatabaseConnection() {
     return [
         'status' => 'unknown',
         'message' => 'Estado da conexão desconhecido',
-        'environment' => getDatabaseConfig()['environment']
+        'environment' => getDatabaseConfig()['environment'
     ];
 }
 
