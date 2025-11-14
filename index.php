@@ -26,14 +26,14 @@ if (isset($_GET['success'])) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Sistema de Cadastro</h1>
+            <h1> Sistema de Cadastro</h1>
             <p>Trabalho Prático - Cloud/WEB/Docker</p>
         </div>
         
         <div class="content">
             <!-- Formulário de Cadastro -->
             <div class="form-section">
-                <h2>➕ Cadastrar Novo Usuário</h2>
+                <h2> Cadastrar Novo Usuário</h2>
                 <?php echo $message; ?>
                 <form action="cadastro.php" method="POST">
                     <div class="form-group">
@@ -56,13 +56,13 @@ if (isset($_GET['success'])) {
                         <input type="text" id="cidade" name="cidade" placeholder="Digite a cidade">
                     </div>
                     
-                    <button type="submit" class="btn">📋 Cadastrar Usuário</button>
+                    <button type="submit" class="btn"> Cadastrar Usuário</button>
                 </form>
             </div>
             
             <!-- Lista de Usuários -->
             <div class="list-section">
-                <h2>👥 Usuários Cadastrados</h2>
+                <h2> Usuários Cadastrados</h2>
                 <?php if ($result->num_rows > 0): ?>
                     <table>
                         <thead>
@@ -95,7 +95,7 @@ if (isset($_GET['success'])) {
                     </table>
                 <?php else: ?>
                     <div class="empty-message">
-                        <p>📭 Nenhum usuário cadastrado ainda.</p>
+                        <p> Nenhum usuário cadastrado ainda.</p>
                         <p>Use o formulário ao lado para cadastrar o primeiro usuário!</p>
                     </div>
                 <?php endif; ?>
