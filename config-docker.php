@@ -187,7 +187,7 @@ function testDatabaseConnection() {
     return [
         'status' => 'unknown',
         'message' => 'Estado da conexão desconhecido',
-        'environment' => getDatabaseConfig()['environment'
+        'environment' => getDatabaseConfig()['environment']
     ];
 }
 
