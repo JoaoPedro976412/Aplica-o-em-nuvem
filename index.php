@@ -1,10 +1,10 @@
 <?php
 require_once 'config-docker.php';
 
-// Conexão - LINHA MODIFICADA
+// Conexão
 $conn = getConnection();
 
-// Buscar usuários (SQLite) - CORRIGIDO
+// Buscar usuários (SQLite)
 $usuarios = $conn->query("SELECT * FROM usuarios ORDER BY data_cadastro DESC");
 
 // Mensagens de sucesso/erro
@@ -63,7 +63,13 @@ if (isset($_GET['success'])) {
             <!-- Lista de Usuários -->
             <div class="list-section">
                 <h2>👥 Usuários Cadastrados</h2>
-                <?php if ($usuarios->rowCount() > 0): ?>
+                <?php 
+                // VERIFICAÇÃO DEBUG - REMOVA DEPOIS
+                $total = $usuarios->rowCount();
+                echo "<!-- DEBUG: Total de usuários = $total -->";
+                
+                if ($total > 0): 
+                ?>
                     <table>
                         <thead>
                             <tr>
@@ -77,7 +83,10 @@ if (isset($_GET['success'])) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php while($row = $usuarios->fetch(PDO::FETCH_ASSOC)): ?>
+                            <?php 
+                            while($row = $usuarios->fetch(PDO::FETCH_ASSOC)): 
+                                echo "<!-- DEBUG: Exibindo usuário ID = {$row['id']} -->";
+                            ?>
                             <tr>
                                 <td><?php echo $row['id']; ?></td>
                                 <td><?php echo htmlspecialchars($row['nome']); ?></td>
@@ -108,6 +117,7 @@ if (isset($_GET['success'])) {
             <p>Trabalho Prático - Desenvolvido com PHP + SQLite + Cloud</p>
             <p>Ambiente: <?php echo getenv('RENDER') ? 'Render' : 'XAMPP'; ?></p>
             <p><a href="admin.php" style="color: #007bff;">📊 Acessar Admin SQLite</a></p>
+            <p><small>DEBUG: Total de usuários no banco: <?php echo $total; ?></small></p>
         </div>
     </div>
 
@@ -133,5 +143,5 @@ if (isset($_GET['success'])) {
 </body>
 </html>
 <?php
-$conn = null; // Fechar conexão SQLite
+$conn = null;
 ?>
