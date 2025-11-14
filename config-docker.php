@@ -32,33 +32,33 @@ function getDatabaseConfig() {
 }
 
 // Função para criar conexão
-function createConnection() {
-    $config = getDatabaseConfig();
+function getDatabaseConfig() {
+    // Tenta TODAS as possíveis variáveis do Railway
+    $host = getenv('MYSQLHOST') ?: getenv('MYSQL_HOST') ?: 'mysql.railway.internal';
+    $user = getenv('MYSQLUSER') ?: getenv('MYSQL_USER') ?: 'root';
+    $password = getenv('MYSQLPASSWORD') ?: getenv('MYSQL_PASSWORD') ?: 'xminMfPMKOPjROIQFmEEBPMbuxGmodkz';
+    $database = getenv('MYSQLDATABASE') ?: getenv('MYSQL_DATABASE') ?: 'railway';
     
-    // Tentativa de conexão direta com o banco
-    $conn = new mysqli(
-        $config['host'],
-        $config['user'], 
-        $config['password'],
-        $config['database']
-    );
-    
-    // Se conexão bem-sucedida
-    if (!$conn->connect_error) {
-        logSystemInfo("Conexão MySQL estabelecida com sucesso - Ambiente: " . $config['environment']);
-        return $conn;
+    // FORÇA conexão Railway se detectar que está no Railway
+    if (getenv('RAILWAY_PUBLIC_DOMAIN')) {
+        return [
+            'host' => $host,
+            'user' => $user,
+            'password' => $password,
+            'database' => $database,
+            'environment' => 'RAILWAY'
+        ];
+    } else {
+        // Configurações XAMPP (desenvolvimento)
+        return [
+            'host' => 'localhost',
+            'user' => 'root',
+            'password' => '',
+            'database' => 'sistema_cadastro',
+            'environment' => 'XAMPP'
+        ];
     }
-    
-    // Se não conseguir conectar, tentar criar o banco
-    logSystemInfo("Tentando criar banco de dados...");
-    
-    // Conexão sem database específico
-    $conn_temp = new mysqli(
-        $config['host'],
-        $config['user'], 
-        $config['password']
-    );
-    
+}
     if ($conn_temp->connect_error) {
         $error_msg = "Erro na conexão com o MySQL: " . $conn_temp->connect_error;
         logSystemInfo($error_msg);
@@ -193,3 +193,4 @@ if (isset($_GET['debug']) && $_GET['debug'] === 'db') {
     exit;
 }
 ?>
+
