@@ -10,7 +10,7 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin SQLite</title>
+    <title>Admin</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .card { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 5px; }
@@ -20,7 +20,7 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
     </style>
 </head>
 <body>
-    <h1>📊 Admin SQLite - Sistema de Cadastro</h1>
+    <h1>📊 Sistema de Cadastro</h1>
     
     <div class="card">
         <h3>📈 Estatísticas</h3>
@@ -59,7 +59,7 @@ $tabelas = $conn->query("SELECT name FROM sqlite_master WHERE type='table'")->fe
                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                     <td><?php echo htmlspecialchars($user['telefone']); ?></td>
                     <td><?php echo htmlspecialchars($user['cidade']); ?></td>
-                    <td><?php echo date('d/m/Y H:i', strtotime($user['data_cadastro'])); ?></td>
+                    <td><?php echo $user['data_cadastro'] ? date('d/m/Y H:i', strtotime($user['data_cadastro'])) : '-'; ?></td>
                 </tr>
                 <?php endwhile; ?>
             </tbody>
