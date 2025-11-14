@@ -1,38 +1,29 @@
 <?php
 require_once 'config-docker.php';
 
-if ($_POST && isset($_POST['id'])) {
-    $conn = createConnection();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
     
-    $id = intval($_POST['id']);
-    
-    // Verificar se o ID é válido
-    if ($id <= 0) {
-        header("Location: index.php?error=" . urlencode("ID inválido!"));
-        exit;
-    }
-    
-    // Verificar se o usuário existe
-    $check_user = $conn->query("SELECT id, nome FROM usuarios WHERE id = $id");
-    
-    if ($check_user && $check_user->num_rows > 0) {
-        $user_data = $check_user->fetch_assoc();
-        $user_name = $user_data['nome'];
-        
-        $sql = "DELETE FROM usuarios WHERE id = $id";
-        
-        if ($conn->query($sql) === TRUE) {
-            header("Location: index.php?success=" . urlencode("Usuário '{$user_name}' excluído com sucesso!"));
-        } else {
-            header("Location: index.php?error=" . urlencode("Erro ao excluir: " . $conn->error));
+    if (!empty($id)) {
+        try {
+            $conn = getConnection();
+            
+            // Excluir usuário
+            $stmt = $conn->prepare("DELETE FROM usuarios WHERE id = ?");
+            $stmt->execute([$id]);
+            
+            header('Location: index.php?success=Usuário excluído com sucesso!');
+            
+        } catch (Exception $e) {
+            header('Location: index.php?error=Erro ao excluir usuário: ' . $e->getMessage());
         }
     } else {
-        header("Location: index.php?error=" . urlencode("Usuário não encontrado!"));
+        header('Location: index.php?error=ID do usuário não especificado');
     }
     
-    $conn->close();
-} else {
-    header("Location: index.php");
     exit;
 }
+
+// Se não for POST, redireciona para index
+header('Location: index.php');
 ?>
